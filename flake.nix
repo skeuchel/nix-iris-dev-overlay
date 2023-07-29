@@ -5,7 +5,7 @@
   outputs = inputs: let
     # Load the dev releases from the stdpp and iris json files.
     stdppDevReleases = builtins.fromJSON (builtins.readFile ./stdpp.json);
-    irisDevReleases = builtins.fromJSON (builtins.readFile ./stdpp.json);
+    irisDevReleases = builtins.fromJSON (builtins.readFile ./iris.json);
 
     # Ideally we would simply patch mkCoqPackages, but that seems impossible.
     # Instead, we take the existing coqPackages and add the dev versions
