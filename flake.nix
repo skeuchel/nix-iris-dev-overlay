@@ -4,8 +4,8 @@
 
   outputs = inputs: let
     # Load the dev releases from the stdpp and iris json files.
-    stdppDevReleases = builtins.fromJSON (builtins.readFile ./stdpp.json);
-    irisDevReleases = builtins.fromJSON (builtins.readFile ./iris.json);
+    stdppReleases = builtins.fromJSON (builtins.readFile ./stdpp.json);
+    irisReleases = builtins.fromJSON (builtins.readFile ./iris.json);
 
     # Ideally we would simply patch mkCoqPackages, but that seems impossible.
     # Instead, we take the existing coqPackages and add the dev versions
@@ -17,17 +17,21 @@
         stdpp = super.stdpp.override ({mkCoqDerivation, ...}: {
           mkCoqDerivation = drv_:
             (mkCoqDerivation drv_).override (old: {
-              release = old.release // stdppDevReleases;
+              release = old.release // stdppReleases;
             });
         });
         iris = super.iris.override ({mkCoqDerivation, ...}: {
           mkCoqDerivation = drv_:
             (mkCoqDerivation drv_).override (old: {
-              release = old.release // irisDevReleases;
+              release = old.release // irisReleases;
             });
         });
       });
   in {
+    # Export the release mappings, and the patching function so that they
+    # can be used in other flakes.
+    inherit irisReleases stdppReleases patchCoqPackages;
+
     overlay = self: super: let
       # The keys we want to patch. We cannot simply use builtins.attrNames. Instead
       # we specify the keys we want to patch and test that they are really there.
