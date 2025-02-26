@@ -13,7 +13,7 @@
 
     # Patch a single coqPackages attribute set.
     patchCoqPackages = coqPackages:
-      coqPackages.overrideScope' (_self: super: {
+      coqPackages.overrideScope (_self: super: {
         stdpp = super.stdpp.override ({mkCoqDerivation, ...}: {
           mkCoqDerivation = drv_:
             (mkCoqDerivation drv_).override (old: {
